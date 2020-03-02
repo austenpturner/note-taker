@@ -67,7 +67,7 @@ const handleNoteSave = () => {
   };
 
   saveNote(newNote).then(data => {
-    getAndRenderNotes();
+    renderNoteList(data);
     renderActiveNote();
   });
 };
@@ -77,16 +77,9 @@ const handleNoteDelete = function(event) {
   // prevents the click listener for the list from being called when the button inside of it is clicked
   event.stopPropagation();
 
-  // console.log($noteList);
-
   const note = $(this)
     .parent(".list-group-item")
     .data();
-
-
-  console.log(note);
-  console.log(activeNote);
-
 
   if (activeNote.id === note.id) {
     activeNote = {};
@@ -101,14 +94,12 @@ const handleNoteDelete = function(event) {
 // Sets the activeNote and displays it
 const handleNoteView = function() {
   activeNote = $(this).data();
-  console.log('handNoteView has run');
   renderActiveNote();
 };
 
 // Sets the activeNote to and empty object and allows the user to enter a new note
 const handleNewNoteView = () => {
   activeNote = {};
-  console.log('handleNewNoteView has run');
   renderActiveNote();
 };
 
@@ -131,8 +122,6 @@ const renderNoteList = notes => {
   for (let i = 0; i < notes.length; i++) {
     const note = notes[i];
 
-    // console.log(note);
-
     const $li = $("<li class='list-group-item'>").data(note);
     const $span = $("<span>").text(note.title);
     const $delBtn = $(
@@ -144,14 +133,11 @@ const renderNoteList = notes => {
   }
 
   $noteList.append(noteListItems);
-
-  // console.log($noteList);
 };
 
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => {
   return getNotes().then(data => {
-    // console.log(data);
     renderNoteList(data);
   });
 };

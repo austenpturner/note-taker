@@ -27,19 +27,17 @@ app.get("/api/notes", function(req, res) {
 
 
 app.post("/api/notes", function(req, res) {
-    // Should receive a new note to save on the request body, add it to the db.json file, and then return the new note to the client
     let notesArray = [];
     try {
         const notes = fs.readFileSync('./db/db.json');
         notesArray = JSON.parse(notes);
         notesArray.push(req.body);
     
-
         const notesString = JSON.stringify(notesArray);
 
         fs.writeFileSync('./db/db.json', notesString);
         
-        res.json(req.body);
+        res.json(notesArray);
 
     } catch (err) {
         console.log(err);
@@ -57,18 +55,19 @@ app.delete("/api/notes/:id", function(req, res) {
             let note = notesArray[i];
             if (note.id === noteId) {
                 notesArray.splice(i, 1);
-                console.log(notesArray);
             }
         }
+
+        const notesString = JSON.stringify(notesArray);
+
+        fs.writeFileSync('./db/db.json', notesString); 
+
+        res.json(notesArray);
+
     } catch (err) {
         console.log(err);
         res.send('error');
     }
-
-    const notesString = JSON.stringify(notesArray);
-
-    fs.writeFileSync('./db/db.json', notesString);  
-    // Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique id when it's saved. In order to delete a note, you'll need to read all notes from the db.json file, remove the note with the given id property, and then rewrite the notes to the db.json file
 });
 
 // Starts the server to begin listening
